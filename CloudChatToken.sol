@@ -7,10 +7,10 @@ contract CloudChatToken {
 
     mapping(address => mapping(address => uint256)) private _allowances;
 
-    string private _name = "CloudChatToken";
-    string private _symbol = "CC";
-    uint8 private _decimals = 18;
-    uint256 private _totalSupply = 100 * 10**9 * 10**18;
+    string constant private _name = "CloudChatToken";
+    string constant private _symbol = "CC";
+    uint8 constant private _decimals = 18;
+    uint256 constant private _totalSupply = 100 * 10**9 * 10**18;
 
     event Transfer(address indexed from, address indexed to, uint256 value);
 
@@ -25,28 +25,28 @@ contract CloudChatToken {
         emit Transfer(address(0), msg.sender, _totalSupply);
     }
 
-    function name() public view virtual returns (string memory) {
+    function name() external view virtual returns (string memory) {
         return _name;
     }
 
-    function symbol() public view virtual returns (string memory) {
+    function symbol() external view virtual returns (string memory) {
         return _symbol;
     }
 
-    function decimals() public view virtual returns (uint8) {
+    function decimals() external view virtual returns (uint8) {
         return _decimals;
     }
 
-    function totalSupply() public view virtual returns (uint256) {
+    function totalSupply() external view virtual returns (uint256) {
         return _totalSupply;
     }
 
-    function balanceOf(address account) public view virtual returns (uint256) {
+    function balanceOf(address account) external view virtual returns (uint256) {
         return _balances[account];
     }
 
     function transfer(address to, uint256 amount)
-        public
+        external
         virtual
         returns (bool)
     {
@@ -65,7 +65,7 @@ contract CloudChatToken {
     }
 
     function approve(address spender, uint256 amount)
-        public
+        external
         virtual
         returns (bool)
     {
@@ -78,15 +78,19 @@ contract CloudChatToken {
         address from,
         address to,
         uint256 amount
-    ) public virtual returns (bool) {
+    ) external virtual returns (bool) {
         address spender = msg.sender;
+        require(
+            spender == from,
+            "ERC20: transferFrom spender must be the same as from"
+        );
         _spendAllowance(from, spender, amount);
         _transfer(from, to, amount);
         return true;
     }
 
     function increaseAllowance(address spender, uint256 addedValue)
-        public
+        external
         virtual
         returns (bool)
     {
@@ -96,7 +100,7 @@ contract CloudChatToken {
     }
 
     function decreaseAllowance(address spender, uint256 subtractedValue)
-        public
+        external
         virtual
         returns (bool)
     {
@@ -118,8 +122,10 @@ contract CloudChatToken {
         address to,
         uint256 amount
     ) internal virtual {
+        require(from != to, "ERC20: transfer to address cannot be from");
         require(from != address(0), "ERC20: transfer from the zero address");
         require(to != address(0), "ERC20: transfer to the zero address");
+        require(amount > 0, "ERC20: transfer amount must be greater than zero");
 
         uint256 fromBalance = _balances[from];
         require(
