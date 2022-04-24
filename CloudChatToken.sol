@@ -7,10 +7,10 @@ contract CloudChatToken {
 
     mapping(address => mapping(address => uint256)) private _allowances;
 
-    string constant private _name = "CloudChatToken";
-    string constant private _symbol = "CC";
-    uint8 constant private _decimals = 18;
-    uint256 constant private _totalSupply = 100 * 10**9 * 10**18;
+    string private constant _name = "CloudChatToken";
+    string private constant _symbol = "CC";
+    uint8 private constant _decimals = 18;
+    uint256 private constant _totalSupply = 100 * 10**9 * 10**18;
 
     event Transfer(address indexed from, address indexed to, uint256 value);
 
@@ -41,7 +41,12 @@ contract CloudChatToken {
         return _totalSupply;
     }
 
-    function balanceOf(address account) external view virtual returns (uint256) {
+    function balanceOf(address account)
+        external
+        view
+        virtual
+        returns (uint256)
+    {
         return _balances[account];
     }
 
@@ -51,6 +56,7 @@ contract CloudChatToken {
         returns (bool)
     {
         address owner = msg.sender;
+        require(owner != to, "ERC20: transfer to address cannot be owner");
         _transfer(owner, to, amount);
         return true;
     }
@@ -81,8 +87,8 @@ contract CloudChatToken {
     ) external virtual returns (bool) {
         address spender = msg.sender;
         require(
-            spender == from,
-            "ERC20: transferFrom spender must be the same as from"
+            spender != from,
+            "ERC20: transferFrom spender can not be the from"
         );
         _spendAllowance(from, spender, amount);
         _transfer(from, to, amount);
@@ -122,7 +128,6 @@ contract CloudChatToken {
         address to,
         uint256 amount
     ) internal virtual {
-        require(from != to, "ERC20: transfer to address cannot be from");
         require(from != address(0), "ERC20: transfer from the zero address");
         require(to != address(0), "ERC20: transfer to the zero address");
         require(amount > 0, "ERC20: transfer amount must be greater than zero");
