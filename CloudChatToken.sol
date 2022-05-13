@@ -7,10 +7,10 @@ contract CloudChatToken {
 
     mapping(address => mapping(address => uint256)) private _allowances;
 
-    string private constant _name = "CloudChatToken";
+    string private constant _name = "CloudChat Token";
     string private constant _symbol = "CC";
     uint8 private constant _decimals = 18;
-    uint256 private constant _totalSupply = 100 * 10**9 * 10**18;
+    uint256 private constant _totalSupply = 10 * 10**9 * 10**18;
 
     event Transfer(address indexed from, address indexed to, uint256 value);
 
